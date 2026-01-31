@@ -4,10 +4,12 @@ export default function App() {
   const [transactions, setTransactions] = useState([])
 const [loading, setLoading] = useState(true)
 const [statusFilter, setStatusFilter] = useState("All")
+const [typeFilter, setTypeFilter] = useState("All")
 const [search, setSearch] = useState("");
 
 const filteredTransactions = transactions
   .filter((tx) => statusFilter === "All" ? true : tx.status === statusFilter)
+  .filter((tx) => typeFilter === "All" ? true : tx.type === typeFilter)
   .filter((tx) => {
     const q = search.trim().toLowerCase();
     if (!q) return true;
@@ -21,12 +23,11 @@ useEffect(() => {
 
   const id = setTimeout(() => {
     setTransactions([
-      { name: "Alex Papas", email: "alex@demo.com", amount: "€129.00", status: "Paid", date: "2026-01-26" },
-      { name: "Maria K.", email: "maria@demo.com", amount: "€59.00", status: "Pending", date: "2026-01-26" },
-      { name: "Nikos D.", email: "nikos@demo.com", amount: "€249.00", status: "Failed", date: "2026-01-25" },
-      { name: "Elena S.", email: "elena@demo.com", amount: "€19.00", status: "Paid", date: "2026-01-25" },
+      { name: "Alex Papas", email: "alex@demo.com", amount: "€129.00", status: "Paid", date: "2026-01-26", type: "Subscription"},
+      { name: "Maria K.", email: "maria@demo.com", amount: "€59.00", status: "Pending", date: "2026-01-26", type: "Subscription" },
+      { name: "Nikos D.", email: "nikos@demo.com", amount: "€249.00", status: "Failed", date: "2026-01-25", type: "One-time"},
+      { name: "Elena S.", email: "elena@demo.com", amount: "€19.00", status: "Paid", date: "2026-01-25", type: "One-time"},
     ])
-
     setLoading(false)
   }, 1200)
 
@@ -152,7 +153,7 @@ useEffect(() => {
                placeholder:text-gray-400 ring-1 ring-white/10 focus:outline-none
                focus:ring-2 focus:ring-sky-500/50"
   />
-  {["All", "Paid", "Pending", "Failed", "Unknown"].map((s) => {
+  {["All", "Paid", "Pending", "Failed"].map((s) => {
     const active = statusFilter === s
     return (
       <button
@@ -165,6 +166,22 @@ useEffect(() => {
         }`}
       >
         {s}
+      </button>
+    )
+  })}
+  {["All", "Subscription", "One-time"].map((t) => {
+    const active = typeFilter === t
+    return (
+      <button
+        key={t}
+        onClick={() => {console.log("typeFilter ->", t); setTypeFilter(t)}}
+        className={`text-xs rounded-lg px-3 py-2 ring-1 transition ${
+          active
+            ? "bg-white/10 text-white ring-white/20"
+            : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10"
+        }`}
+      >
+        {t}
       </button>
     )
   })}
@@ -190,29 +207,38 @@ useEffect(() => {
           <th className="text-left font-medium px-4 py-3">Amount</th>
           <th className="text-left font-medium px-4 py-3">Status</th>
           <th className="text-left font-medium px-4 py-3">Date</th>
+          <th className="text-left font-medium px-4 py-3">Type</th>
         </tr>
       </thead>
 
       <tbody className="divide-y divide-white/10">
         {loading ? (
   <tr>
-    <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
+    <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
       Loading transactions…
     </td>
   </tr>
 
 ) : filteredTransactions.length === 0 ? (
     <tr>
-    <td colSpan={5} className="px-4 py-6 text-center text-sm text-gray-400">
-      No results for <span className="text-gray-200">{statusFilter}</span>
-      {search.trim() ? (
-        <> & “<span className="text-gray-200">{search.trim()}</span>”</>
-      ) : null}
-      .
-    </td>
+    <td colSpan={6} className="px-4 py-6 text-center text-sm text-gray-400">
+  No results for{" "}
+  <span className="text-gray-200">{statusFilter}</span>
+  {typeFilter !== "All" && (
+    <>
+      {" "} / <span className="text-gray-200">{typeFilter}</span>
+    </>
+  )}
+  {search.trim() && (
+    <>
+      {" "} &quot;<span className="text-gray-200">{search.trim()}</span>&quot;
+    </>
+  )}
+</td>
+
   </tr>
 ): ( filteredTransactions.map((tx, idx) => {
-    const badge =
+    const statusBadge =
       tx.status === "Paid"
         ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30"
         : tx.status === "Pending"
@@ -221,17 +247,27 @@ useEffect(() => {
         ? "bg-rose-500/15 text-rose-300 ring-rose-500/30"
         : "bg-white/10 text-gray-200 ring-white/20"
 
+      const typeBadge =
+        tx.type === "Subscription"
+        ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30"
+        : "bg-rose-500/15 text-rose-300 ring-rose-500/30"
+
     return (
       <tr key={idx} className="hover:bg-white/5">
         <td className="px-4 py-3 font-medium">{tx.name}</td>
         <td className="px-4 py-3 text-gray-400">{tx.email}</td>
         <td className="px-4 py-3">{tx.amount}</td>
         <td className="px-4 py-3">
-          <span className={`inline-flex rounded-full px-2 py-1 text-xs ring-1 ${badge}`}>
+          <span className={`inline-flex rounded-full px-2 py-1 text-xs ring-1 ${statusBadge}`}>
             {tx.status}
           </span>
         </td>
         <td className="px-4 py-3 text-gray-400">{tx.date}</td>
+        <td className="px-4 py-3">
+          <span className={`inline-flex rounded-full px-2 py-1 text-xs ring-1 ${typeBadge}`}>
+            {tx.type}
+          </span>
+        </td>
       </tr>
     )
   })
