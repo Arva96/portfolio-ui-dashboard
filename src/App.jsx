@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import Badge from "./components/badge";
 
 export default function App() {
   const [transactions, setTransactions] = useState([])
@@ -153,38 +154,25 @@ useEffect(() => {
                placeholder:text-gray-400 ring-1 ring-white/10 focus:outline-none
                focus:ring-2 focus:ring-sky-500/50"
   />
-  {["All", "Paid", "Pending", "Failed"].map((s) => {
-    const active = statusFilter === s
-    return (
-      <button
-        key={s}
-        onClick={() => setStatusFilter(s)}
-        className={`text-xs rounded-lg px-3 py-2 ring-1 transition ${
-          active
-            ? "bg-white/10 text-white ring-white/20"
-            : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10"
-        }`}
-      >
-        {s}
-      </button>
-    )
-  })}
-  {["All", "Subscription", "One-time"].map((t) => {
-    const active = typeFilter === t
-    return (
-      <button
-        key={t}
-        onClick={() => {console.log("typeFilter ->", t); setTypeFilter(t)}}
-        className={`text-xs rounded-lg px-3 py-2 ring-1 transition ${
-          active
-            ? "bg-white/10 text-white ring-white/20"
-            : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10"
-        }`}
-      >
-        {t}
-      </button>
-    )
-  })}
+   
+      <select value={statusFilter} onChange={(s) => setStatusFilter(s.target.value)} className="rounded-lg bg-white/5 text-gray-200 ring-1 ring-white/10 px-3 py-2 text-sm outline-none">
+        <option value="All" className="bg-gray-900">All Statuses</option>
+        <option value="Paid" className="bg-gray-900">Paid</option>
+        <option value="Pending" className="bg-gray-900">Pending</option>
+        <option value="Failed" className="bg-gray-900">Failed</option>
+        <option value="Unknown" className="bg-gray-900">Unknown</option>
+
+      </select>
+
+      <select value={typeFilter} onChange={(s) => setTypeFilter(s.target.value)} className="rounded-lg bg-white/5 text-gray-200 ring-1 ring-white/10 px-3 py-2 text-sm outline-none">
+        <option value="All" className="bg-gray-900">All Types</option>
+        <option value="Subscription" className="bg-gray-900">Subscription</option>
+        <option value="One-time" className="bg-gray-900">One Time</option>
+
+      </select>
+    
+  
+  
 </div>
 
 
@@ -238,35 +226,18 @@ useEffect(() => {
 
   </tr>
 ): ( filteredTransactions.map((tx, idx) => {
-    const statusBadge =
-      tx.status === "Paid"
-        ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30"
-        : tx.status === "Pending"
-        ? "bg-amber-500/15 text-amber-300 ring-amber-500/30"
-        : tx.status === "Failed"
-        ? "bg-rose-500/15 text-rose-300 ring-rose-500/30"
-        : "bg-white/10 text-gray-200 ring-white/20"
-
-      const typeBadge =
-        tx.type === "Subscription"
-        ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30"
-        : "bg-rose-500/15 text-rose-300 ring-rose-500/30"
-
+   
     return (
       <tr key={idx} className="hover:bg-white/5">
         <td className="px-4 py-3 font-medium">{tx.name}</td>
         <td className="px-4 py-3 text-gray-400">{tx.email}</td>
         <td className="px-4 py-3">{tx.amount}</td>
         <td className="px-4 py-3">
-          <span className={`inline-flex rounded-full px-2 py-1 text-xs ring-1 ${statusBadge}`}>
-            {tx.status}
-          </span>
+          <Badge variant="status" value={tx.status} />
         </td>
         <td className="px-4 py-3 text-gray-400">{tx.date}</td>
         <td className="px-4 py-3">
-          <span className={`inline-flex rounded-full px-2 py-1 text-xs ring-1 ${typeBadge}`}>
-            {tx.type}
-          </span>
+          <Badge variant="type" value={tx.type} />
         </td>
       </tr>
     )
