@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react"
 import Badge from "./components/badge";
+import { getFilteredTransactions } from "./helpers/getFilteredTransactions"
+import TransactionsTable from "./components/transactions/TransactionsTable"
+
+
 
 export default function App() {
   const [transactions, setTransactions] = useState([])
@@ -8,17 +12,13 @@ const [statusFilter, setStatusFilter] = useState("All")
 const [typeFilter, setTypeFilter] = useState("All")
 const [search, setSearch] = useState("");
 
-const filteredTransactions = transactions
-  .filter((tx) => statusFilter === "All" ? true : tx.status === statusFilter)
-  .filter((tx) => typeFilter === "All" ? true : tx.type === typeFilter)
-  .filter((tx) => {
-    const q = search.trim().toLowerCase();
-    if (!q) return true;
+const filteredTransactions = getFilteredTransactions({
+  transactions,
+  statusFilter,
+  typeFilter,
+  search,
+})
 
-    const name = tx.name.toLowerCase();
-    const email = tx.email.toLowerCase();
-    return name.includes(q) || email.includes(q);
-  });
 
 useEffect(() => {
 
@@ -187,65 +187,15 @@ useEffect(() => {
   </div>
 
   <div className="border-t border-white/10 overflow-x-auto">
-    <table className="min-w-full text-sm">
-      <thead className="bg-white/5 text-gray-300">
-        <tr>
-          <th className="text-left font-medium px-4 py-3">Customer</th>
-          <th className="text-left font-medium px-4 py-3">Email</th>
-          <th className="text-left font-medium px-4 py-3">Amount</th>
-          <th className="text-left font-medium px-4 py-3">Status</th>
-          <th className="text-left font-medium px-4 py-3">Date</th>
-          <th className="text-left font-medium px-4 py-3">Type</th>
-        </tr>
-      </thead>
+  <TransactionsTable
+  transactions={filteredTransactions}
+  loading={loading}
+  statusFilter={statusFilter}
+  typeFilter={typeFilter}
+  search={search}
+/>
 
-      <tbody className="divide-y divide-white/10">
-        {loading ? (
-  <tr>
-    <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-      Loading transactions…
-    </td>
-  </tr>
-
-) : filteredTransactions.length === 0 ? (
-    <tr>
-    <td colSpan={6} className="px-4 py-6 text-center text-sm text-gray-400">
-  No results for{" "}
-  <span className="text-gray-200">{statusFilter}</span>
-  {typeFilter !== "All" && (
-    <>
-      {" "} / <span className="text-gray-200">{typeFilter}</span>
-    </>
-  )}
-  {search.trim() && (
-    <>
-      {" "} &quot;<span className="text-gray-200">{search.trim()}</span>&quot;
-    </>
-  )}
-</td>
-
-  </tr>
-): ( filteredTransactions.map((tx, idx) => {
    
-    return (
-      <tr key={idx} className="hover:bg-white/5">
-        <td className="px-4 py-3 font-medium">{tx.name}</td>
-        <td className="px-4 py-3 text-gray-400">{tx.email}</td>
-        <td className="px-4 py-3">{tx.amount}</td>
-        <td className="px-4 py-3">
-          <Badge variant="status" value={tx.status} />
-        </td>
-        <td className="px-4 py-3 text-gray-400">{tx.date}</td>
-        <td className="px-4 py-3">
-          <Badge variant="type" value={tx.type} />
-        </td>
-      </tr>
-    )
-  })
-)}
-
-      </tbody>
-    </table>
   </div>
 </section>
 
