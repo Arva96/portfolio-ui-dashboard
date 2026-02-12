@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import Badge from "./components/badge";
 import { getFilteredTransactions } from "./helpers/getFilteredTransactions"
 import TransactionsTable from "./components/transactions/TransactionsTable"
+import FiltersBar from "./components/filters/FiltersBar";
+
 
 
 
@@ -145,35 +147,15 @@ useEffect(() => {
       <p className="mt-1 text-xs text-gray-400">A list of your latest payments.</p>
     </div>
 
-    <div className="mt-3 flex flex-wrap gap-2">
-       <input
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    placeholder="Search name or email..."
-    className="w-full sm:w-64 rounded-lg bg-white/5 px-3 py-2 text-sm text-gray-100
-               placeholder:text-gray-400 ring-1 ring-white/10 focus:outline-none
-               focus:ring-2 focus:ring-sky-500/50"
-  />
-   
-      <select value={statusFilter} onChange={(s) => setStatusFilter(s.target.value)} className="rounded-lg bg-white/5 text-gray-200 ring-1 ring-white/10 px-3 py-2 text-sm outline-none">
-        <option value="All" className="bg-gray-900">All Statuses</option>
-        <option value="Paid" className="bg-gray-900">Paid</option>
-        <option value="Pending" className="bg-gray-900">Pending</option>
-        <option value="Failed" className="bg-gray-900">Failed</option>
-        <option value="Unknown" className="bg-gray-900">Unknown</option>
+   <FiltersBar
+  search={search}
+  onSearchChange={setSearch}
+  statusFilter={statusFilter}
+  onStatusChange={setStatusFilter}
+  typeFilter={typeFilter}
+  onTypeChange={setTypeFilter}
+/>
 
-      </select>
-
-      <select value={typeFilter} onChange={(s) => setTypeFilter(s.target.value)} className="rounded-lg bg-white/5 text-gray-200 ring-1 ring-white/10 px-3 py-2 text-sm outline-none">
-        <option value="All" className="bg-gray-900">All Types</option>
-        <option value="Subscription" className="bg-gray-900">Subscription</option>
-        <option value="One-time" className="bg-gray-900">One Time</option>
-
-      </select>
-    
-  
-  
-</div>
 
 
     <div className="flex items-center gap-2">
