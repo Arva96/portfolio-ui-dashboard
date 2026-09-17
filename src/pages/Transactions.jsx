@@ -41,6 +41,7 @@ export default function Transactions() {
           <p className="mt-1 text-sm text-gray-400">
             Search, filter, and review transactions.
           </p>
+          <p className="mt-1 text-sm text-gray-400">Showing {filteredTransactions.length} transactions</p>
         </div>
       </div>
 
