@@ -45,7 +45,7 @@ return (
       <tr key={idx} className="hover:bg-white/5">
         <td className="px-4 py-3 font-medium">{tx.name}</td>
         <td className="px-4 py-3 text-gray-400">{tx.email}</td>
-        <td className="px-4 py-3">{tx.amount}</td>
+        <td className="px-4 py-3">€{tx.amount.toFixed(2)}</td>
         <td className="px-4 py-3">
           <Badge variant="status" value={tx.status} />
         </td>

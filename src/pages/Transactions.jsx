@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FiltersBar from "../components/filters/FiltersBar";
 import TransactionsTable from "../components/transactions/TransactionsTable";
 import { getFilteredTransactions } from "../helpers/getFilteredTransactions";
+import { transactions as mockTransactions } from "../data/transactions.js";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -13,12 +14,7 @@ export default function Transactions() {
 
   useEffect(() => {
     const id = setTimeout(() => {
-    setTransactions([
-      { name: "Alex Papas", email: "alex@demo.com", amount: "€129.00", status: "Paid", date: "2026-01-26", type: "Subscription"},
-      { name: "Maria K.", email: "maria@demo.com", amount: "€59.00", status: "Pending", date: "2026-01-26", type: "Subscription" },
-      { name: "Nikos D.", email: "nikos@demo.com", amount: "€249.00", status: "Failed", date: "2026-01-25", type: "One-time"},
-      { name: "Elena S.", email: "elena@demo.com", amount: "€19.00", status: "Paid", date: "2026-01-25", type: "One-time"},
-    ])
+    setTransactions(mockTransactions)
     setLoading(false)
   }, 1200)
      

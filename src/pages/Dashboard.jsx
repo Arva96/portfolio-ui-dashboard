@@ -1,10 +1,28 @@
+import { transactions } from "../data/transactions.js";
+import StatCard from "../components/StatCard";
+
+
+const paidTransactions = transactions.filter(
+  (tx) => tx.status === "Paid"
+);
+
+const totalRevenue = paidTransactions.reduce((total, tx) => {
+  return tx.amount + total;
+}, 0);
+
 export default function Dashboard() {
   return (
     <div>
-      <h1 className="text-xl font-semibold text-white">Dashboard</h1>
-      <p className="mt-2 text-sm text-gray-400">
-        Overview / charts / metrics will live here.
-      </p>
-    </div>
+    <StatCard
+  title="Total Revenue"
+  value={totalRevenue}
+/>
+
+<StatCard
+  title="Paid Transactions"
+  value={paidTransactions.length}
+/>
+</div>
+
   );
 }
