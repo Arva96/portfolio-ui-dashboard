@@ -12,7 +12,7 @@ const totalRevenue = paidTransactions.reduce((total, tx) => {
 
 export default function Dashboard() {
   return (
-    <div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
     <StatCard
   title="Total Revenue"
   value={totalRevenue}
@@ -21,6 +21,10 @@ export default function Dashboard() {
 <StatCard
   title="Paid Transactions"
   value={paidTransactions.length}
+/>
+<StatCard
+  title="Transactions"
+  value={transactions.length}
 />
 </div>
 
